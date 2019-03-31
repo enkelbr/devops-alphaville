@@ -20,6 +20,6 @@ deploy:
   provider: script
   script: aws cloudformation deploy --template-file out.yaml --stack-name devops-alphaville --capabilities CAPABILITY_IAM
   skip_cleanup: true
-  all_branches: true
   on:
+    all_branches: true
     python: "3.6"
