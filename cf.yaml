@@ -71,7 +71,7 @@ Resources:
          - '-'
          - - Ref: AWS::StackName
            - geohash
-      Handler: geohash.handler
+      Handler: handler.handler
       CodeUri: ./src
       Runtime: python3.7
       MemorySize: 128
