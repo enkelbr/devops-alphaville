@@ -15,7 +15,7 @@ script:
   - aws cloudformation validate-template --template-body file://cf.yaml
 after_success:
   - coveralls
-before_deploy: aws cloudformation package --template-file cf.yaml --s3-bucket cf-templates-ohq9r4yozcyg-us-east-1 --output-template-file out.yaml
+before_deploy: aws cloudformation package --template-file cf.yaml --s3-bucket ${BUCKET_NAME} --output-template-file out.yaml
 deploy:
   provider: script
   script: aws cloudformation deploy --template-file out.yaml --stack-name devops-alphaville --capabilities CAPABILITY_IAM
