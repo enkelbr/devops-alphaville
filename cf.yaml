@@ -76,7 +76,7 @@ Resources:
       Runtime: python3.7
       MemorySize: 128
       Timeout: 3
-      Role: !GetAtt role.Arn
+      Role: !ImportValue lambdaRole
       Events:
         geohash:
           Type: Api
@@ -84,19 +84,6 @@ Resources:
             Path: /geohash
             Method: get
             RestApiId: !Ref API
-  
-  role:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
 Outputs:
   API:
