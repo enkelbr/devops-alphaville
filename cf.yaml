@@ -1,0 +1,13 @@
+# 1850
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Enkel Sample API
+
+Resources:
+  API:
+    Type: AWS::Serverless::Api
+    Properties:
+
+  geohash:
+    Type: AWS::Serverless::Function
+    Properties:
