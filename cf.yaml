@@ -121,14 +121,46 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: antigravity
-
-  appClient:
-    Type: AWS::Cognito::UserPoolClient
+  
+  cognitoDomain:
+    Type: "AWS::CloudFormation::CustomResource"
     Properties:
-      ClientName: rndllmnr
-      GenerateSecret: True
+      ServiceToken: 
+        !ImportValue cognitoUserPoolDomainResource
+      Domain: antigravity
       UserPoolId: !Ref cognitoUserPool
-
+  
+  resourceServer:
+    Type: "AWS::CloudFormation::CustomResource"
+    Properties:
+      ServiceToken: 
+        !ImportValue cognitoServerResource
+      user_pool_id: !Ref cognitoUserPool
+      identifier: resource-antigravity
+      name: resource-antigravity
+      scope_list:
+        - ScopeName: geohash.get
+          ScopeDescription: Get Operations
+  
+  appClientCustom:
+    Type: "AWS::CloudFormation::CustomResource"
+    Properties:
+      ServiceToken: 
+        !ImportValue cognitoAppClientResource
+      ClientName: appClient
+      GenerateSecret: true
+      RefreshTokenValidity: 30
+      UserPoolId: !Ref cognitoUserPool
+      ReadAttributes:
+        - email
+      WriteAttributes:
+        - email
+      SupportedIdentityProviders:
+        - COGNITO
+      AllowedOAuthFlows:
+        - client_credentials
+      AllowedOAuthScopes: !GetAtt resourceServer.AllowedScopes
+      AllowedOAuthFlowsUserPoolClient: true
 
 Outputs:
   API:
@@ -137,7 +169,7 @@ Outputs:
     Value: !Ref cognitoUserPool
     Export:
       Name: cognitoUserPool
-  CaradhrasAppClient:
-    Value: !Ref appClient
+  appClient:
+    Value: !Ref appClientCustom
     Export:
       Name: CaradhrasAppClient
