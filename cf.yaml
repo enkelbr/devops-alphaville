@@ -63,6 +63,38 @@ Resources:
                 type: mock
       StageName: LIVE
 
+  customDomain:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      CertificateArn: !ImportValue certificate
+      DomainName:
+        Fn::Join:
+          - '.'
+          - - api
+            - !ImportValue zoneName
+  
+  dnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name:
+        Fn::Join:
+          - '.'
+          - - api
+            - !ImportValue zoneName
+      HostedZoneId: !ImportValue zoneId
+      AliasTarget:
+        HostedZoneId: !GetAtt customDomain.DistributionHostedZoneId
+        DNSName: !GetAtt customDomain.DistributionDomainName
+      Type: A
+
+  basePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref customDomain
+      BasePath: antigravity
+      RestApiId: !Ref API
+      Stage: LIVE
+
   geohash:
     Type: AWS::Serverless::Function
     Properties:
