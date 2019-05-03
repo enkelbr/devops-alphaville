@@ -116,7 +116,28 @@ Resources:
             Path: /geohash
             Method: get
             RestApiId: !Ref API
+  
+  cognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: antigravity
+
+  appClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: rndllmnr
+      GenerateSecret: True
+      UserPoolId: !Ref cognitoUserPool
+
 
 Outputs:
   API:
     Value: !Ref API.Stage
+  CognitoData:
+    Value: !Ref cognitoUserPool
+    Export:
+      Name: cognitoUserPool
+  CaradhrasAppClient:
+    Value: !Ref appClient
+    Export:
+      Name: CaradhrasAppClient
