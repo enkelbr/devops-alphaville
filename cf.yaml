@@ -13,6 +13,16 @@ Resources:
           title: !Join [ "-", [ Ref: "AWS::StackName", "API" ] ]
         schemes:
         - https
+        securityDefinitions:
+          Cognito:
+            type: "apiKey"
+            name: "Authorization"
+            in: "header"
+            x-amazon-apigateway-authtype: "cognito_user_pools"
+            x-amazon-apigateway-authorizer:
+              providerARNs:
+                - !GetAtt cognitoUserPool.Arn
+              type: "cognito_user_pools"
         paths:
           /geohash:
             get:
@@ -32,6 +42,9 @@ Resources:
                 passthroughBehavior: when_no_match
                 httpMethod: POST
                 type: aws_proxy
+              security:
+                - Cognito:
+                  - "resource-antigravity/geohash.get"
             options:
               consumes:
               - application/json
